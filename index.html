@@ -3,767 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة نواة | التميز في العلوم الطبيعية للبكالوريا</title>
-    <!-- Tailwind CSS CDN -->
+    <title>منصة نواة - مادة العلوم الطبيعية للبكالوريا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Tajawal -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        navy: { 800: '#0f172a', 900: '#0a0e1a' },
-                        brandBlue: { 
-                            50: '#eff6ff', 
-                            100: '#dbeafe', 
-                            500: '#3b82f6', 
-                            600: '#2563eb', 
-                            700: '#1d4ed8', 
-                            800: '#1e40af', 
-                            900: '#1e3a8a' 
-                        },
-                        brandGold: { 
-                            100: '#fef9c3', 
-                            400: '#facc15', 
-                            500: '#eab308', 
-                            600: '#ca8a04' 
-                        }
+                        brand: { blue: '#104a8e', darkblue: '#0a3262', yellow: '#ecc427', lightbg: '#f8fafc' }
                     },
-                    fontFamily: { tajawal: ['Tajawal', 'sans-serif'] }
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <style>
-        body { font-family: 'Tajawal', sans-serif; }
-        .bg-grid-pattern {
-            background-image: radial-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 1px);
-            background-size: 28px 28px;
-        }
-        .dark .bg-grid-pattern {
-            background-image: radial-gradient(rgba(250, 204, 21, 0.08) 1px, transparent 1px);
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        .dark ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
-    </style>
 </head>
-<body class="bg-slate-50 dark:bg-navy-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 selection:bg-brandGold-400 selection:text-slate-900">
+<body class="bg-brand-lightbg text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- إعداد رابط سيرفر Google Apps Script مع متغير الملاحة -->
+    <!-- رابط السيرفر API -->
     <script>
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycby7KAICSyNLQLF9c_h8s4tVVYHQF5Z-U2VNIJHBuFvPi8VTeHIHcwXMZSb92fefcTMgSg/exec";
-        let currentUser = JSON.parse(localStorage.getItem('nawaat_user')) || null;
-        let selectedPlanName = "";
+        const API_URL = "https://script.google.com/macros/s/AKfycbznfygYtWYTP4t-573gO9gkoWvFZp3ETpa29YLIO1oVvKsYcuqELhxceH2meKJxC9lqXQ/exec";
+        let currentUser = null;
     </script>
 
-    <!-- الهيدر الموحد والشريط العلوي -->
-    <header class="sticky top-0 z-40 bg-white/90 dark:bg-navy-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 h-20 px-4 sm:px-8 flex items-center justify-between transition-colors">
-        <!-- الشعار والعلامة التجارية -->
-        <div class="flex items-center gap-3 cursor-pointer" onclick="showView('landingView')">
-            <div class="w-11 h-11 bg-gradient-to-tr from-brandBlue-700 to-brandBlue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brandBlue-600/30 text-white font-black text-xl">
-                نـ
-            </div>
-            <span class="text-2xl font-black text-brandBlue-900 dark:text-white tracking-tight">
-                منصة <span class="text-brandGold-500">نواة</span>
-            </span>
-        </div>
-
-        <!-- الروابط الرئيسية -->
-        <nav class="hidden md:flex items-center gap-8 text-xs font-bold text-slate-600 dark:text-slate-300">
-            <button onclick="showView('landingView')" class="hover:text-brandBlue-600 dark:hover:text-brandGold-400 transition">الرئيسية</button>
-            <a href="#features" onclick="showView('landingView')" class="hover:text-brandBlue-600 dark:hover:text-brandGold-400 transition">المميزات</a>
-            <a href="#offers" onclick="showView('landingView')" class="hover:text-brandBlue-600 dark:hover:text-brandGold-400 transition">العروض والأسعار</a>
-            <a href="#methodology" onclick="showView('landingView')" class="hover:text-brandBlue-600 dark:hover:text-brandGold-400 transition">منهجية العمل</a>
-            <a href="#faq" onclick="showView('landingView')" class="hover:text-brandBlue-600 dark:hover:text-brandGold-400 transition">الأسئلة الشائعة</a>
-        </nav>
-
-        <!-- أزرار الإجراءات والمستخدم -->
-        <div class="flex items-center gap-3">
-            <!-- زر التبديل بين الوضع الليلة/النهاري -->
-            <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-brandGold-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="تبديل الوضع">
-                <svg id="themeMoon" class="w-4 h-4 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="themeSun" class="w-4 h-4 dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"></path></svg>
-            </button>
-
-            <!-- القائمة غير المسجلة -->
-            <div id="navAuthBtns" class="flex items-center gap-2">
-                <button onclick="openModal('loginModal')" class="px-4 py-2.5 text-xs font-black text-brandBlue-700 dark:text-brandGold-400 hover:bg-brandBlue-50 dark:hover:bg-slate-800 rounded-xl border border-brandBlue-700/20 dark:border-brandGold-400/20 transition">تسجيل الدخول</button>
-                <button onclick="openModal('registerModal')" class="px-5 py-2.5 text-xs font-black text-slate-900 bg-brandGold-400 hover:bg-brandGold-500 rounded-xl shadow-md shadow-brandGold-400/20 transition">فتح حساب</button>
-            </div>
-
-            <!-- قائمة المستخدم المسجل -->
-            <div id="navUserMenu" class="hidden flex items-center gap-3">
-                <button onclick="showDashboard()" class="px-4 py-2 bg-brandBlue-50 dark:bg-slate-800 text-brandBlue-700 dark:text-brandGold-400 rounded-xl text-xs font-black border border-brandBlue-200 dark:border-slate-700 hover:shadow-md transition">فضاء الطالب</button>
-                <button id="adminBtn" onclick="showAdminPanel()" class="hidden px-4 py-2 bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 rounded-xl text-xs font-black border border-purple-200 dark:border-purple-800">لوحة الأدمن</button>
-                <div class="text-right hidden sm:block border-r border-slate-200 dark:border-slate-700 pr-3">
-                    <p id="userNameDisplay" class="text-xs font-black text-brandBlue-900 dark:text-white"></p>
-                    <p id="userRoleDisplay" class="text-[10px] font-bold text-slate-400"></p>
-                </div>
-                <button onclick="logout()" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition" title="تسجيل الخروج">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+    <!-- الهيدر الرئيسي -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <a href="#" onclick="showSection('landingSection')" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold text-xl shadow-md">
+                        <i class="fa-solid font-bold">N</i>
+                    </div>
+                    <span class="text-2xl font-extrabold text-brand-blue dark:text-white tracking-wide">منصة نواة</span>
+                </a>
+                <button id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-lg text-brand-yellow"></i>
                 </button>
+            </div>
+
+            <div id="authButtons" class="flex items-center gap-3">
+                <button onclick="openModal('loginModal')" class="px-5 py-2.5 rounded-xl border border-brand-blue text-brand-blue dark:text-white font-semibold hover:bg-brand-blue hover:text-white transition">تسجيل الدخول</button>
+                <button onclick="openModal('registerModal')" class="px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold hover:bg-brand-darkblue transition">إنشاء حساب</button>
+            </div>
+
+            <div id="userMenu" class="hidden flex items-center gap-4">
+                <span id="userNameDisplay" class="font-bold text-brand-blue dark:text-brand-yellow"></span>
+                <button onclick="logout()" class="text-sm bg-red-100 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-200">خروج</button>
             </div>
         </div>
     </header>
 
-    <!-- 1. واجهة العرض الرئيسية (Landing Page View) -->
-    <div id="landingView" class="view-section">
-        <!-- Hero Section -->
-        <section class="py-20 bg-grid-pattern text-center max-w-6xl mx-auto px-4 relative overflow-hidden">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-brandBlue-50 dark:bg-slate-800 text-brandBlue-700 dark:text-brandGold-400 rounded-full text-xs font-black mb-8 border border-brandBlue-200 dark:border-slate-700 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                مرافقة بيداغوجية متكاملة للبكالوريا 2025/2026
+    <!-- الواجهة الرئيسية Landing Page -->
+    <main id="landingSection" class="view-section">
+        <section class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-brand-yellow/20 text-brand-blue dark:text-brand-yellow font-bold text-sm">المنصة الأولى للبكالوريا</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-brand-blue dark:text-white">منصة نواة</h1>
+                <p class="text-xl text-slate-600 dark:text-slate-300 font-medium">منصة متخصصة لتدريس مادة العلوم الطبيعية لطلبة البكالوريا. نضمن لك الفهم المنهجي والدقيق لنيل أعلى العلامات.</p>
+                <button onclick="openModal('registerModal')" class="px-8 py-3.5 rounded-xl bg-brand-yellow text-brand-darkblue font-bold text-lg hover:bg-yellow-400 transition shadow-lg">ابدأ التعلم الآن</button>
             </div>
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-brandBlue-900 dark:text-white mb-6 leading-tight">
-                طريقك المباشر للتفوق والرمز <span class="text-brandGold-500 underline decoration-wavy decoration-brandBlue-500">18+</span> في العلوم
-            </h1>
-            <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg md:text-xl font-bold mb-10 leading-relaxed max-w-3xl mx-auto">
-                منصة مخصصة لتقديم دروس منهجية رفيعة المستوى، حل أكثر من 200 تمريناً بأسلوب الاستدلال العلمي، وتصحيح فردي للمحاولات تحت إشراف وتأطير مباشر.
-            </p>
-
-            <div class="flex justify-center items-center gap-4 flex-wrap mb-16">
-                <a href="#offers" class="px-8 py-4 bg-brandBlue-700 hover:bg-brandBlue-800 text-white font-black rounded-2xl shadow-xl shadow-brandBlue-700/25 transition transform hover:-translate-y-1 text-sm">
-                    استكشف العروض والاشتراكات
-                </a>
-                <button onclick="openModal('registerModal')" class="px-8 py-4 bg-white dark:bg-slate-800 text-brandBlue-900 dark:text-white font-black rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm">
-                    إنشاء حساب مجاني
-                </button>
-            </div>
-
-            <!-- الإحصائيات والإنجازات -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto bg-white dark:bg-slate-800/80 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-md">
-                <div class="p-3">
-                    <p class="text-3xl font-black text-brandBlue-700 dark:text-brandGold-400">+2500</p>
-                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">طالب متفوق</p>
-                </div>
-                <div class="p-3 border-r border-slate-200 dark:border-slate-700">
-                    <p class="text-3xl font-black text-brandBlue-700 dark:text-brandGold-400">98%</p>
-                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">نسبة النجاح في البكالوريا</p>
-                </div>
-                <div class="p-3 border-r border-slate-200 dark:border-slate-700">
-                    <p class="text-3xl font-black text-brandBlue-700 dark:text-brandGold-400">+200</p>
-                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">تمرين بالاستدلال العلمي</p>
-                </div>
-                <div class="p-3 border-r border-slate-200 dark:border-slate-700">
-                    <p class="text-3xl font-black text-brandBlue-700 dark:text-brandGold-400">100%</p>
-                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">متابعة وتصحيح فردي</p>
-                </div>
+            <!-- مكان فيديو الأنيميشن GitHub -->
+            <div class="relative w-full h-80 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex items-center justify-center">
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/animation.mp4" type="video/mp4">
+                    الفيديو غير متوفر حالياً
+                </video>
             </div>
         </section>
 
-        <!-- المميزات الأساسية للمنصة -->
-        <section id="features" class="py-16 bg-white dark:bg-slate-800/50 border-y border-slate-200 dark:border-slate-800">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="text-center max-w-2xl mx-auto mb-12">
-                    <h2 class="text-2xl sm:text-3xl font-black text-brandBlue-900 dark:text-white mb-3">لماذا منصة نواة هي الخيار الأول للتفوق؟</h2>
-                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-bold">صُممت المنصة لتلبي كافة متطلبات المنهاج الجزائري بأسلوب عصري يضمن ترسيخ المنهجية</p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:shadow-lg transition">
-                        <div class="w-12 h-12 bg-brandBlue-100 dark:bg-slate-700 text-brandBlue-700 dark:text-brandGold-400 rounded-xl flex items-center justify-center mb-4 text-xl font-black">🎯</div>
-                        <h3 class="text-base font-black text-brandBlue-900 dark:text-white mb-2">منهجية الاستدلال العلمي</h3>
-                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300 leading-relaxed">تفكيك التعليمات المركبة وتدريب الطالب على هيكلة الإجابة النموذجية وفق شبكة التقييم الرسمية.</p>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:shadow-lg transition">
-                        <div class="w-12 h-12 bg-brandGold-100 dark:bg-slate-700 text-brandGold-600 dark:text-brandGold-400 rounded-xl flex items-center justify-center mb-4 text-xl font-black">📝</div>
-                        <h3 class="text-base font-black text-brandBlue-900 dark:text-white mb-2">تصحيح فردي للمحاولات</h3>
-                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300 leading-relaxed">إرسال أوراق المحاولات وتلقي تصحيح دقيق يحدد نقاط القوة والأخطاء المنهجية لتفاديها في البكالوريا.</p>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:shadow-lg transition">
-                        <div class="w-12 h-12 bg-emerald-100 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mb-4 text-xl font-black">📚</div>
-                        <h3 class="text-base font-black text-brandBlue-900 dark:text-white mb-2">بنك تمارين حصرية وحلول بالفيديو</h3>
-                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300 leading-relaxed">تمارين متنوعة تشمل المسعى العلمي والاسترجاع المنظم للمعارف مع فيديوهات شرح مفصلة.</p>
-                    </div>
-                </div>
+        <!-- الإحصائيات -->
+        <section class="bg-white dark:bg-slate-800 border-y border-slate-200 dark:border-slate-700 py-6">
+            <div class="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-6 text-center">
+                <div class="flex items-center gap-3"><i class="fa-brands fa-youtube text-3xl text-red-600"></i><span class="text-2xl font-bold">163K</span></div>
+                <div class="flex items-center gap-3"><i class="fa-brands fa-instagram text-3xl text-pink-600"></i><span class="text-2xl font-bold">188K</span></div>
+                <div class="flex items-center gap-2 text-brand-blue dark:text-brand-yellow font-extrabold text-xl"><i class="fa-solid fa-award"></i><span>نعدك بالتفوق في منصتنا</span></div>
             </div>
         </section>
 
-        <!-- قسم العروض والأسعار -->
-        <section id="offers" class="py-20 max-w-7xl mx-auto px-4">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-xs font-black text-brandBlue-600 dark:text-brandGold-400 bg-brandBlue-50 dark:bg-slate-800 px-3 py-1 rounded-full border border-brandBlue-200 dark:border-slate-700">اشتراكات سنوية شاملة</span>
-                <h2 class="text-3xl font-black text-brandBlue-900 dark:text-white mt-3 mb-3">اختر العرض المناسب لطموحك</h2>
-                <p class="text-slate-500 dark:text-slate-400 text-xs font-bold">اشتراك واحد يضمن لك الوصول حتى يوم الامتحان</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 items-stretch">
-                <!-- العرض الفضي -->
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col justify-between relative hover:border-slate-300 transition">
-                    <div>
-                        <h3 class="text-xl font-black text-slate-800 dark:text-slate-200 mb-2">الاشتراك الفضي</h3>
-                        <p class="text-xs font-bold text-slate-400 mb-6">مناسب لمراجعة الوحدات الأساسية الأولى</p>
-                        <div class="flex items-baseline gap-1 mb-6">
-                            <span class="text-4xl font-black text-slate-900 dark:text-white">7,200</span>
-                            <span class="text-xs font-bold text-slate-400">دج / سنوي</span>
-                        </div>
-                        <ul class="text-xs font-bold space-y-4 text-slate-600 dark:text-slate-300 mb-8">
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> الوحدات 01، 02، 03 من المقرر</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> دورة المنهجية التأسيسية</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> تحميل ملفات ملخصات الـ PDF</li>
-                            <li class="flex items-center gap-2 text-slate-400"><span class="text-slate-300">✕</span> بدون تصحيح فردي للمحاولات</li>
-                        </ul>
-                    </div>
-                    <button onclick="startSubscription('الاشتراك الفضي')" class="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-2xl transition text-xs shadow-md">اشترك الآن في العرض الفضي</button>
+        <!-- الأستاذة والمميزات -->
+        <section class="max-w-7xl mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-brand-blue dark:text-white">طريقتنا في التدريس أونلاين</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="space-y-6">
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">دروس مفصلة</h3><p class="text-sm text-slate-500">شروحات دقيقة لكافة وحدات المقرر.</p></div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">+18 في التفوق</h3><p class="text-sm text-slate-500">تدريب مكثف على أعلى منهجية.</p></div>
                 </div>
-
-                <!-- العرض الذهبي (الأكثر طلباً) -->
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-brandGold-400 shadow-2xl flex flex-col justify-between relative transform md:-translate-y-2">
-                    <span class="absolute -top-4 right-1/2 translate-x-1/2 bg-gradient-to-r from-brandGold-500 to-brandGold-400 text-slate-900 text-[11px] font-black px-4 py-1.5 rounded-full shadow-md">🌟 الأكثر طلباً وإقبالاً</span>
-                    <div>
-                        <h3 class="text-xl font-black text-brandGold-600 dark:text-brandGold-400 mb-2">العرض الذهبي</h3>
-                        <p class="text-xs font-bold text-slate-400 mb-6">التغطية الشاملة لبرنامج البكالوريا</p>
-                        <div class="flex items-baseline gap-1 mb-6">
-                            <span class="text-4xl font-black text-slate-900 dark:text-white">12,500</span>
-                            <span class="text-xs font-bold text-slate-400">دج / سنوي</span>
-                        </div>
-                        <ul class="text-xs font-bold space-y-4 text-slate-600 dark:text-slate-300 mb-8">
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> برنامج العلوم الطبيعية الكامل (كل الوحدات)</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> حل أكثر من 150 تمرين منهجي بالفيديو</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> المتابعة والتقييم الدوري للمستوى</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> مشاركة في دورات المراجعة النهائية</li>
-                        </ul>
-                    </div>
-                    <button onclick="startSubscription('العرض الذهبي')" class="w-full py-4 bg-brandGold-400 hover:bg-brandGold-500 text-slate-900 font-black rounded-2xl transition text-xs shadow-lg shadow-brandGold-400/30">اشترك الآن في العرض الذهبي</button>
+                <div class="flex justify-center">
+                    <div class="w-64 h-80 rounded-3xl bg-brand-blue overflow-hidden shadow-2xl p-2 border-4 border-white"><img src="https://via.placeholder.com/300x400" alt="صورة الأستاذة" class="w-full h-full object-cover rounded-2xl"></div>
                 </div>
-
-                <!-- العرض الألماسي -->
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-brandBlue-600 shadow-xl flex flex-col justify-between relative hover:border-brandBlue-700 transition">
-                    <div>
-                        <h3 class="text-xl font-black text-brandBlue-900 dark:text-white mb-2">العرض الألماسي VIP</h3>
-                        <p class="text-xs font-bold text-slate-400 mb-6">مرافقة خاصة وتصحيح فردي مباشر</p>
-                        <div class="flex items-baseline gap-1 mb-6">
-                            <span class="text-4xl font-black text-slate-900 dark:text-white">14,000</span>
-                            <span class="text-xs font-bold text-slate-400">دج / سنوي</span>
-                        </div>
-                        <ul class="text-xs font-bold space-y-4 text-slate-600 dark:text-slate-300 mb-8">
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> كل مميزات العرض الذهبي والبرنامج السنوي</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> تصحيح فردي دقيق لأوراق محاولات الطالب</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> +200 تمرين منهجي مع مواضيع متوقعة</li>
-                            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 3 دورات مراجعة مجانية وحصص زوم تفاعلية</li>
-                        </ul>
-                    </div>
-                    <button onclick="startSubscription('العرض الألماسي')" class="w-full py-4 bg-brandBlue-700 hover:bg-brandBlue-800 text-white font-black rounded-2xl transition text-xs shadow-lg shadow-brandBlue-700/20">اشترك الآن في العرض الألماسي</button>
+                <div class="space-y-6">
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">تعلم المنهجية من الصفر</h3><p class="text-sm text-slate-500">التركيز على التحليل والاستدلال العلمي.</p></div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">متابعة مستمرة للطلبة</h3><p class="text-sm text-slate-500">تواصل مباشر في المنتدى الخاص.</p></div>
                 </div>
             </div>
         </section>
+    </main>
 
-        <!-- المنهجية التعليمية -->
-        <section id="methodology" class="py-16 bg-slate-100 dark:bg-slate-800/40 border-t border-slate-200 dark:border-slate-800">
-            <div class="max-w-6xl mx-auto px-4">
-                <h2 class="text-2xl sm:text-3xl font-black text-center text-brandBlue-900 dark:text-white mb-12">خطة العمل نحو نقطة 18+ في العلوم</h2>
-                <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-                        <div class="w-10 h-10 bg-brandBlue-700 text-white rounded-full flex items-center justify-center font-black mx-auto mb-4">1</div>
-                        <h4 class="font-black text-sm mb-2">الفهم المفهومي</h4>
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">استيعاب الظواهر البيولوجية بدقة دون الاكتفاء بالحفظ الصم.</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-                        <div class="w-10 h-10 bg-brandBlue-700 text-white rounded-full flex items-center justify-center font-black mx-auto mb-4">2</div>
-                        <h4 class="font-black text-sm mb-2">تفكيك التعليمات</h4>
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">التمكن من أفعال الأداء (حلل، فسر، قارن، صادق على الصحة...).</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-                        <div class="w-10 h-10 bg-brandBlue-700 text-white rounded-full flex items-center justify-center font-black mx-auto mb-4">3</div>
-                        <h4 class="font-black text-sm mb-2">الاستدلال العلمي</h4>
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">بناء نص علمي مهيكل وإبراز المشكلة العلمية والفرضیات.</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-                        <div class="w-10 h-10 bg-brandBlue-700 text-white rounded-full flex items-center justify-center font-black mx-auto mb-4">4</div>
-                        <h4 class="font-black text-sm mb-2">التقييم والتصحيح</h4>
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">تطبيق شبكة التنقيط والتأكد من استيفاء المعايير في الإجابة.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- الأسئلة الشائعة -->
-        <section id="faq" class="py-16 max-w-4xl mx-auto px-4">
-            <h2 class="text-2xl font-black text-center text-brandBlue-900 dark:text-white mb-8">الأسئلة الشائعة</h2>
-            <div class="space-y-4">
-                <details class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-pointer">
-                    <summary class="font-black text-xs sm:text-sm text-brandBlue-900 dark:text-white">كيف أستطيع تسديد حقوق الاشتراك؟</summary>
-                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">تستطيع التسديد عن طريق البريد الجاري CCP أو عبر تطبيق BaridiMob باستخدام الحساب البريدي (RIP) الموضح في صفحة تأكيد الدفع، ثم رفع صورة الوصل بالمنصة.</p>
-                </details>
-                <details class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-pointer">
-                    <summary class="font-black text-xs sm:text-sm text-brandBlue-900 dark:text-white">كم يستغرق تفعيل الحساب بعد رفع الوصل؟</summary>
-                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">يتم تفعيل الحساب فور مراجعة الوصل من طرف الإدارة، وغالباً ما يتم ذلك في غضون ساعات قليلة (أقل من 24 ساعة كأقصى حد).</p>
-                </details>
-                <details class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-pointer">
-                    <summary class="font-black text-xs sm:text-sm text-brandBlue-900 dark:text-white">هل يمكنني متابعة الدروس عبر الهاتف المحمول؟</summary>
-                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">نعم، منصة نواة مصممة ومتوافقة تماماً مع جميع الأجهزة (الهواتف، الألواح الذكية، وأجهزة الكمبيوتر).</p>
-                </details>
-            </div>
-        </section>
-    </div>
-
-    <!-- 2. واجهة دفع واشتراك الطالب (Checkout View) -->
-    <div id="checkoutView" class="view-section hidden max-w-2xl mx-auto my-12 w-full px-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-2xl">
-            <button onclick="showView('landingView')" class="text-xs font-black text-brandBlue-600 dark:text-brandGold-400 mb-4 inline-flex items-center gap-1">
-                ➔ العودة لصفحة العروض
-            </button>
-            <h2 class="text-2xl font-black text-center mb-2 text-brandBlue-900 dark:text-white">تأكيد الاشتراك برفع الوصل</h2>
-            <p id="selectedPlanText" class="text-center text-xs font-black text-brandGold-500 mb-6 bg-brandGold-100/50 dark:bg-slate-700 py-2 rounded-xl"></p>
-
-            <!-- معلومات الدفع البريدي CCP / BaridiMob -->
-            <div class="bg-slate-50 dark:bg-navy-900 p-5 rounded-2xl mb-6 text-xs space-y-3 border border-slate-200 dark:border-slate-700 font-bold">
-                <p class="font-black text-brandBlue-900 dark:text-white text-sm border-b pb-2 border-slate-200 dark:border-slate-800">بيانات الحساب البريدي للدفع:</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-500">رقم الحساب البريدي (RIP):</span>
-                    <span class="font-mono font-black text-brandBlue-700 dark:text-brandGold-400 text-sm">00799999000000000022</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-500">اسم صاحب الحساب:</span>
-                    <span class="text-slate-800 dark:text-slate-200">منصة نواة للتعليم والتدريب</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-500">طريقة الدفع المقبولة:</span>
-                    <span class="text-emerald-600 dark:text-emerald-400">مكتب البريد (CCP) أو تطبيق BaridiMob</span>
-                </div>
+    <!-- لوحة تحكم الأستاذة (Teacher Dashboard) -->
+    <section id="teacherSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12">
+        <h2 class="text-3xl font-bold mb-8 text-brand-blue dark:text-white">لوحة تحكم الأستاذة (الإدارة)</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- إضافة/تعديل دورة -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700">
+                <h3 class="text-xl font-bold mb-4">إضافة أو تعديل دورة</h3>
+                <form id="courseForm" onsubmit="handleSaveCourse(event)" class="space-y-4">
+                    <input type="text" id="courseId" placeholder="معرف الدورة (مثال: C1)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                    <input type="text" id="courseTitle" placeholder="عنوان الدورة" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                    <textarea id="courseDesc" placeholder="وصف الدورة" required class="w-full p-3 rounded-xl border dark:bg-slate-700"></textarea>
+                    <input type="number" id="coursePrice" placeholder="السعر (DA)" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                    <input type="text" id="videoLinks" placeholder="روابط الفيديوهات (Google Drive مفصولة بفواصل)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                    <input type="text" id="fileLinks" placeholder="روابط الملفات (PDF مفصولة بفواصل)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                    <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">حفظ الدورة</button>
+                </form>
             </div>
 
-            <!-- نموذج الرفع -->
-            <form onsubmit="handleReceiptSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-black mb-1.5 text-slate-700 dark:text-slate-300">الاسم واللقب الكامل للمشترك:</label>
-                    <input type="text" id="subFullName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold focus:ring-2 focus:ring-brandBlue-600 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-black mb-1.5 text-slate-700 dark:text-slate-300">صورة وصل الدفع (CCP / BaridiMob):</label>
-                    <input type="file" id="subReceiptFile" accept="image/*,.pdf" required class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-navy-900 font-bold cursor-pointer">
-                    <p class="text-[10px] text-slate-400 mt-1">يرجى إرفاق صورة واضحة تظهر فيها قيمة المبلغ وتاريخ العملية.</p>
-                </div>
-                <button type="submit" id="subBtn" class="w-full py-4 bg-brandGold-400 hover:bg-brandGold-500 font-black text-slate-900 rounded-xl transition text-xs shadow-lg shadow-brandGold-400/20">
-                    إرسال الوصل وتأكيد الطلب
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 3. واجهة لوحة تحكم الطالب (Student Dashboard View) -->
-    <div id="dashboardView" class="view-section hidden max-w-7xl mx-auto my-8 px-4 w-full flex-1">
-        <!-- شريط الترحيب وحالة الاشتراك -->
-        <div id="statusBanner" class="p-4 mb-6 rounded-2xl text-xs font-black text-center shadow-sm transition"></div>
-
-        <div class="grid md:grid-cols-12 gap-6">
-            <!-- قائمة الدروس والوحدات (شريط جانبي) -->
-            <aside class="md:col-span-4 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm h-[650px] flex flex-col">
-                <h3 class="font-black text-sm mb-4 text-brandBlue-900 dark:text-white flex items-center justify-between">
-                    <span>برنامج الدروس والوحدات</span>
-                    <span id="lessonCountBadge" class="bg-brandBlue-50 dark:bg-slate-700 text-brandBlue-700 dark:text-brandGold-400 text-[10px] px-2 py-0.5 rounded-full"></span>
-                </h3>
-                <div id="lessonsList" class="space-y-2 overflow-y-auto flex-1 pr-1"></div>
-            </aside>
-
-            <!-- مشغل الدروس والمحتوى -->
-            <main class="md:col-span-8 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <div>
-                    <div class="aspect-video bg-black rounded-2xl overflow-hidden relative shadow-lg mb-6 border border-slate-800">
-                        <iframe id="videoPlayer" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <span id="lessonUnitTag" class="text-[10px] font-black text-brandGold-600 dark:text-brandGold-400 bg-brandGold-100/50 dark:bg-slate-700 px-2.5 py-1 rounded-md">اختر درساً</span>
-                            <h2 id="lessonTitle" class="text-lg font-black text-brandBlue-900 dark:text-white mt-2">اختر درساً من القائمة للبدء بالمشاهدة</h2>
-                        </div>
-                        <a id="pdfLink" href="#" target="_blank" class="hidden inline-flex items-center gap-2 px-5 py-3 bg-brandBlue-700 text-white hover:bg-brandBlue-800 rounded-xl text-xs font-black shadow-md transition whitespace-nowrap">
-                            📥 تحميل الوثيقة (PDF)
-                        </a>
-                    </div>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold text-slate-400">
-                    <span>منصة نواة التعليمية © 2025</span>
-                    <span>علوم الطبيعة والحياة</span>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- 4. لوحة الإدارة لمراجعة الوصلات (Admin View) -->
-    <div id="adminView" class="view-section hidden max-w-7xl mx-auto my-8 px-4 w-full">
-        <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h2 class="text-xl font-black text-brandBlue-900 dark:text-white">لوحة الإدارة - مراجعة الاشتراكات</h2>
-                    <p class="text-xs font-bold text-slate-400 mt-1">التحكم في تفعيل طلبات المشتركين عبر وصلات CCP / BaridiMob</p>
-                </div>
-                <button onclick="showAdminPanel()" class="px-4 py-2 bg-brandBlue-50 dark:bg-slate-700 text-brandBlue-700 dark:text-brandGold-400 text-xs font-black rounded-xl border border-brandBlue-200 dark:border-slate-600">
-                    🔄 تحديث البيانات
-                </button>
-            </div>
-
-            <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
-                <table class="w-full text-right text-xs font-bold">
-                    <thead class="bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200">
-                        <tr>
-                            <th class="p-4">رقم الطلب</th>
-                            <th class="p-4">اسم الطالب</th>
-                            <th class="p-4">البريد الإلكتروني</th>
-                            <th class="p-4">العرض المختار</th>
-                            <th class="p-4">صورة الوصل</th>
-                            <th class="p-4">حالة الاشتراك</th>
-                            <th class="p-4">الإجراء والتفعيل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
-                        <!-- تُملأ ديناميكياً من الخادم -->
-                    </tbody>
-                </table>
+            <!-- المنتدى الخاص بالطلبة للتحكم -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700">
+                <h3 class="text-xl font-bold mb-4">إدارة رسائل المنتدى</h3>
+                <div id="teacherForumList" class="space-y-4 h-96 overflow-y-auto"></div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- النوافذ المنبثقة (Modals) -->
+    <!-- لوحة الطالب (Student Dashboard) -->
+    <section id="studentSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12">
+        <h2 class="text-3xl font-bold mb-8 text-brand-blue dark:text-white">فضاء الطالب</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- قائمة الدورات المتاحة والاشتراك -->
+            <div class="lg:col-span-2 space-y-6">
+                <h3 class="text-xl font-bold">الدورات والمحتوى المتاح</h3>
+                <div id="studentCoursesList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
 
-    <!-- نافذة تسجيل الحساب -->
-    <div id="registerModal" class="fixed inset-0 bg-navy-900/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 relative shadow-2xl border border-slate-200 dark:border-slate-700">
-            <button onclick="closeModal('registerModal')" class="absolute top-5 left-5 font-black text-slate-400 hover:text-slate-600 dark:hover:text-white">✕</button>
-            <h3 class="text-xl font-black mb-1 text-center text-brandBlue-900 dark:text-white">إنشاء حساب جديد</h3>
-            <p class="text-xs font-bold text-slate-400 text-center mb-6">انضم إلى مجتمع متميزي العلوم الطبيعية</p>
+            <!-- المنتدى العام -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700 flex flex-col h-[500px]">
+                <h3 class="text-xl font-bold mb-4">منتدى المناقشة العام</h3>
+                <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-4"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="forumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-3 rounded-xl border dark:bg-slate-700">
+                    <button onclick="postForumMessage()" class="px-5 bg-brand-blue text-white font-bold rounded-xl"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals (تسجيل / دخول) -->
+    <div id="registerModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('registerModal')" class="absolute top-4 left-4"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold mb-6 text-brand-blue dark:text-white">إنشاء حساب جديد</h3>
             <form onsubmit="handleRegister(event)" class="space-y-3">
-                <input type="text" id="regName" placeholder="الاسم واللقب الكامل" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
-                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
-                <input type="tel" id="regPhone" placeholder="رقم الهاتف" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="regWilaya" placeholder="الولاية" required class="px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none">
-                    <input type="text" id="regBaladiya" placeholder="البلدية" required class="px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none">
+                    <input type="text" id="regFirstName" placeholder="الاسم" required class="p-3 rounded-xl border dark:bg-slate-700">
+                    <input type="text" id="regLastName" placeholder="اللقب" required class="p-3 rounded-xl border dark:bg-slate-700">
                 </div>
-                <input type="password" id="regPass" placeholder="كلمة السر" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
-                <button type="submit" id="regSubmitBtn" class="w-full py-3.5 bg-brandGold-400 hover:bg-brandGold-500 font-black rounded-xl text-xs text-slate-900 transition shadow-md shadow-brandGold-400/20 mt-2">
-                    إنشاء الحساب
-                </button>
+                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                <input type="password" id="regPassword" placeholder="كلمة السر" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                <input type="tel" id="regPhone" placeholder="رقم الهاتف" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="regWilaya" placeholder="الولاية" required class="p-3 rounded-xl border dark:bg-slate-700">
+                    <input type="text" id="regCommune" placeholder="البلدية" required class="p-3 rounded-xl border dark:bg-slate-700">
+                </div>
+                <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">تأكيد التسجيل</button>
             </form>
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول -->
-    <div id="loginModal" class="fixed inset-0 bg-navy-900/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 relative shadow-2xl border border-slate-200 dark:border-slate-700">
-            <button onclick="closeModal('loginModal')" class="absolute top-5 left-5 font-black text-slate-400 hover:text-slate-600 dark:hover:text-white">✕</button>
-            <h3 class="text-xl font-black mb-1 text-center text-brandBlue-900 dark:text-white">تسجيل الدخول</h3>
-            <p class="text-xs font-bold text-slate-400 text-center mb-6">مرحباً بك مجدداً في منصة نواة</p>
+    <div id="loginModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 left-4"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold mb-6 text-brand-blue dark:text-white">تسجيل الدخول</h3>
             <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
-                <input type="password" id="loginPass" placeholder="كلمة السر" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-900 text-xs font-bold outline-none focus:ring-2 focus:ring-brandBlue-600">
-                <button type="submit" id="loginSubmitBtn" class="w-full py-3.5 bg-brandBlue-700 hover:bg-brandBlue-800 font-black text-white rounded-xl text-xs transition shadow-md shadow-brandBlue-700/20">
-                    دخول إلى الحساب
-                </button>
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                <input type="password" id="loginPassword" placeholder="كلمة السر" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
+                <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">دخول</button>
             </form>
         </div>
     </div>
 
-    <!-- الفوتر -->
-    <footer class="mt-auto bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-slate-500">
-            <p>جميع الحقوق محفوظة © لمنصة <span class="text-brandGold-500 font-black">نواة</span> 2025</p>
-            <p>تم التطوير والربط باستخدام Google Sheets Engine</p>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-12 pb-8 mt-20">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+                <h4 class="text-xl font-bold text-brand-blue dark:text-white mb-3">منصة نواة</h4>
+                <p class="text-slate-500 text-sm mb-2">جميع الحقوق محفوظة © 2026</p>
+                <p class="text-slate-600 text-sm">تطوير البرمجيات: <a href="https://your-portfolio-link.com" target="_blank" class="text-brand-blue font-bold hover:underline">نوفل</a></p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-3">الصفحات</h4>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li><a href="#" onclick="showSection('landingSection')">الرئيسية</a></li>
+                    <li><a href="#" onclick="openModal('registerModal')">إنشاء حساب</a></li>
+                    <li><a href="#" onclick="openModal('loginModal')">تسجيل الدخول</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-3">حسابات التواصل</h4>
+                <div class="flex flex-col space-y-2 text-sm">
+                    <a href="#" class="text-slate-600 hover:text-pink-600"><i class="fa-brands fa-instagram"></i> إنستغرام الأستاذة 1</a>
+                    <a href="#" class="text-slate-600 hover:text-pink-600"><i class="fa-brands fa-instagram"></i> إنستغرام الأستاذة 2</a>
+                    <a href="#" class="text-slate-600 hover:text-red-600"><i class="fa-brands fa-youtube"></i> قناة اليوتيوب</a>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- البرمجة التفاعلية والربط البرمجي الكامل -->
+    <!-- Logic Script -->
     <script>
-        // إدارة الوضع الليلي
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-        }
-
-        // إدارات العرض والصفحات
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        document.getElementById('themeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // تحديث شريط الملاحة حسب وضع المستخدم
-        function updateNav() {
-            const authBtns = document.getElementById('navAuthBtns');
-            const userMenu = document.getElementById('navUserMenu');
-            const adminBtn = document.getElementById('adminBtn');
-
-            if (currentUser) {
-                authBtns.classList.add('hidden');
-                userMenu.classList.remove('hidden');
-                document.getElementById('userNameDisplay').innerText = currentUser.fullName;
-                document.getElementById('userRoleDisplay').innerText = currentUser.role === 'admin' ? 'مدير المنصة' : 'طالب مشترِك';
-                
-                if (currentUser.role === 'admin') {
-                    adminBtn.classList.remove('hidden');
-                } else {
-                    adminBtn.classList.add('hidden');
-                }
-            } else {
-                authBtns.classList.remove('hidden');
-                userMenu.classList.add('hidden');
-            }
+        function showSection(id) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
         }
 
-        // 1. تسجيل حساب جديد
         async function handleRegister(e) {
             e.preventDefault();
-            const btn = document.getElementById('regSubmitBtn');
-            btn.innerText = "جاري إنشاء الحساب...";
-            btn.disabled = true;
-
-            const payload = {
+            const data = {
                 action: 'register',
-                fullName: document.getElementById('regName').value,
+                firstName: document.getElementById('regFirstName').value,
+                lastName: document.getElementById('regLastName').value,
                 email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
                 phone: document.getElementById('regPhone').value,
                 wilaya: document.getElementById('regWilaya').value,
-                baladiya: document.getElementById('regBaladiya').value,
-                password: document.getElementById('regPass').value
+                commune: document.getElementById('regCommune').value
             };
-
-            try {
-                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const data = await res.json();
-                alert(data.message);
-                if (data.status === 'success') {
-                    closeModal('registerModal');
-                    openModal('loginModal');
-                }
-            } catch (err) {
-                alert("حدث خطأ في الاتصال بالخادم: " + err.toString());
-            } finally {
-                btn.innerText = "إنشاء الحساب";
-                btn.disabled = false;
-            }
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
+            alert(res.message || "تم إرسال الطلب بنجاح، يرجى انتظار تفعيل الحساب.");
+            closeModal('registerModal');
         }
 
-        // 2. تسجيل الدخول
         async function handleLogin(e) {
             e.preventDefault();
-            const btn = document.getElementById('loginSubmitBtn');
-            btn.innerText = "جاري التحقق...";
-            btn.disabled = true;
-
-            const payload = {
+            const data = {
                 action: 'login',
                 email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPass').value
+                password: document.getElementById('loginPassword').value
             };
-
-            try {
-                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    currentUser = data.user;
-                    localStorage.setItem('nawaat_user', JSON.stringify(currentUser));
-                    updateNav();
-                    closeModal('loginModal');
-                    showDashboard();
-                } else {
-                    alert(data.message);
-                }
-            } catch (err) {
-                alert("خطأ في الاتصال بالحساب: " + err.toString());
-            } finally {
-                btn.innerText = "دخول إلى الحساب";
-                btn.disabled = false;
-            }
-        }
-
-        // تسجيل الخروج
-        function logout() {
-            localStorage.removeItem('nawaat_user');
-            currentUser = null;
-            updateNav();
-            showView('landingView');
-        }
-
-        // 3. بدء عملية الاشتراك
-        function startSubscription(planName) {
-            if (!currentUser) {
-                alert('يرجى تسجيل الدخول أو إنشاء حساب جديد أولاً للاشتراك.');
-                openModal('loginModal');
-                return;
-            }
-            selectedPlanName = planName;
-            document.getElementById('selectedPlanText').innerText = `العرض المحدد: ${planName}`;
-            document.getElementById('subFullName').value = currentUser.fullName;
-            showView('checkoutView');
-        }
-
-        // 4. إرسال وصل الدفع
-        async function handleReceiptSubmit(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('subReceiptFile');
-            const file = fileInput.files[0];
-            const btn = document.getElementById('subBtn');
-            btn.innerText = "جاري رفع الوصل وتخزين البيانات...";
-            btn.disabled = true;
-
-            const reader = new FileReader();
-            reader.onload = async function() {
-                const payload = {
-                    action: 'submitReceipt',
-                    email: currentUser.email,
-                    fullName: document.getElementById('subFullName').value,
-                    plan: selectedPlanName,
-                    fileName: file.name,
-                    fileBase64: reader.result
-                };
-
-                try {
-                    const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                    const data = await res.json();
-                    alert(data.message);
-                    if (data.status === 'success') showDashboard();
-                } catch (err) {
-                    alert("حدث خطأ في رفع الوصل: " + err.toString());
-                } finally {
-                    btn.innerText = "إرسال الوصل وتأكيد الطلب";
-                    btn.disabled = false;
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // 5. عرض لوحة الطالب والدروس
-        async function showDashboard() {
-            if (!currentUser) { openModal('loginModal'); return; }
-            showView('dashboardView');
-
-            const statusBanner = document.getElementById('statusBanner');
-            statusBanner.className = "p-4 mb-6 rounded-2xl text-xs font-black text-center bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
-            statusBanner.innerText = "جاري جلب بيانات الحساب والدروس...";
-
-            try {
-                const res = await fetch(`${GAS_API_URL}?action=getStudentDashboard&email=${currentUser.email}`);
-                const data = await res.json();
-
-                if (data.subStatus === 'نشط') {
-                    statusBanner.className = "p-4 mb-6 rounded-2xl text-xs font-black text-center bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800";
-                    statusBanner.innerText = `✅ اشتراكك مفعل بنجاح | العرض: ${data.plan}`;
-                } else if (data.subStatus === 'قيد المراجعة') {
-                    statusBanner.className = "p-4 mb-6 rounded-2xl text-xs font-black text-center bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800";
-                    statusBanner.innerText = "⏳ وصل الدفع قيد المراجعة والتدقيق من طرف الإدارة. سيتم تفعيل دروسك فور الاعتماد.";
-                } else {
-                    statusBanner.className = "p-4 mb-6 rounded-2xl text-xs font-black text-center bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border border-red-300 dark:border-red-800";
-                    statusBanner.innerText = "⚠️ حسابك غير مفعل بعد. يرجى التوجه لصفحة العروض وتقديم وصل التسديد.";
-                }
-
-                const lessonsList = document.getElementById('lessonsList');
-                lessonsList.innerHTML = '';
-                document.getElementById('lessonCountBadge').innerText = `${data.lessons.length} درساً`;
-
-                data.lessons.forEach(lesson => {
-                    const item = document.createElement('div');
-                    item.className = "p-3.5 bg-slate-50 dark:bg-slate-700/60 hover:bg-brandBlue-50 dark:hover:bg-slate-700 rounded-xl cursor-pointer border border-slate-200/80 dark:border-slate-600 transition flex items-center justify-between";
-                    item.innerHTML = `
-                        <div>
-                            <p class="text-xs font-black text-slate-800 dark:text-white">${lesson[2]}</p>
-                            <p class="text-[10px] text-slate-400 mt-1">${lesson[1]}</p>
-                        </div>
-                        <span class="text-xs text-brandBlue-600 dark:text-brandGold-400">▶</span>
-                    `;
-                    item.onclick = () => playLesson(lesson[1], lesson[2], lesson[3], lesson[4], data.subStatus);
-                    lessonsList.appendChild(item);
-                });
-
-            } catch (err) {
-                statusBanner.innerText = "تعذر تحميل الدروس، يرجى المحاولة لاحقاً.";
-            }
-        }
-
-        function playLesson(unit, title, videoUrl, pdfUrl, status) {
-            if (status !== 'نشط') {
-                alert('عذراً! يتوجب تفعيل حسابك من طرف الإدارة لمشاهدة الدروس.');
-                return;
-            }
-            document.getElementById('lessonUnitTag').innerText = unit;
-            document.getElementById('lessonTitle').innerText = title;
-            document.getElementById('videoPlayer').src = videoUrl;
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
             
-            const pdfBtn = document.getElementById('pdfLink');
-            pdfBtn.href = pdfUrl;
-            pdfBtn.classList.remove('hidden');
-        }
+            if (res.status === 'success') {
+                currentUser = res;
+                closeModal('loginModal');
+                document.getElementById('authButtons').classList.add('hidden');
+                document.getElementById('userMenu').classList.remove('hidden');
+                document.getElementById('userNameDisplay').innerText = res.name || res.student.FirstName;
 
-        // 6. عرض لوحة الإدارة لمراجعة الوصلات
-        async function showAdminPanel() {
-            if (!currentUser || currentUser.role !== 'admin') {
-                alert('عذراً، هذه المنطقة مخصصة لإدارة المنصة فقط.');
-                return;
-            }
-            showView('adminView');
-
-            const tableBody = document.getElementById('adminTableBody');
-            tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">جاري تحميل بيانات الطلبات والوصلات...</td></tr>`;
-
-            try {
-                const res = await fetch(`${GAS_API_URL}?action=getAdminData`);
-                const data = await res.json();
-                tableBody.innerHTML = '';
-
-                if (data.subscriptions.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">لا توجد طلبات اشتراك حالياً.</td></tr>`;
-                    return;
+                if (res.role === 'teacher') {
+                    showSection('teacherSection');
+                    loadTeacherForum();
+                } else {
+                    showSection('studentSection');
+                    loadStudentDashboard();
                 }
-
-                data.subscriptions.forEach(sub => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/50 transition";
-                    tr.innerHTML = `
-                        <td class="p-4 font-mono text-[11px] font-bold text-slate-500">${sub[0]}</td>
-                        <td class="p-4 font-black">${sub[2]}</td>
-                        <td class="p-4 text-slate-500">${sub[1]}</td>
-                        <td class="p-4 font-black text-brandGold-600 dark:text-brandGold-400">${sub[3]}</td>
-                        <td class="p-4">
-                            <a href="${sub[4]}" target="_blank" class="px-3 py-1.5 bg-brandBlue-50 dark:bg-slate-700 text-brandBlue-700 dark:text-brandGold-400 rounded-lg text-[11px] font-black underline">
-                                👁️ معاينة الوصل
-                            </a>
-                        </td>
-                        <td class="p-4">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black ${sub[5] === 'نشط' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}">
-                                ${sub[5]}
-                            </span>
-                        </td>
-                        <td class="p-4">
-                            ${sub[5] !== 'نشط' ? `<button onclick="approveSub('${sub[0]}')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-black transition shadow-sm">تفعيل الحساب</button>` : '<span class="text-slate-400 text-[11px]">مفعل مسبقاً</span>'}
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-
-            } catch (err) {
-                tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-red-500">حدث خطأ أثناء جلب البيانات.</td></tr>`;
+            } else {
+                alert(res.message);
             }
         }
 
-        async function approveSub(subId) {
-            if (!confirm("هل أنت تأكد من قبول الوصل وتفعيل حساب هذا الطالب؟")) return;
+        function logout() {
+            currentUser = null;
+            document.getElementById('authButtons').classList.remove('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
+            showSection('landingSection');
+        }
 
-            try {
-                const res = await fetch(GAS_API_URL, {
+        async function handleSaveCourse(e) {
+            e.preventDefault();
+            const data = {
+                action: 'saveCourse',
+                courseId: document.getElementById('courseId').value,
+                title: document.getElementById('courseTitle').value,
+                description: document.getElementById('courseDesc').value,
+                price: document.getElementById('coursePrice').value,
+                videoLinks: document.getElementById('videoLinks').value,
+                fileLinks: document.getElementById('fileLinks').value
+            };
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+            alert("تم حفظ الدورة بنجاح");
+        }
+
+        async function loadStudentDashboard() {
+            const courses = await fetch(`${API_URL}?action=getCourses`).then(r => r.json());
+            const list = document.getElementById('studentCoursesList');
+            list.innerHTML = courses.map(c => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-xl mb-2">${c.Title}</h4>
+                    <p class="text-sm text-slate-500 mb-4">${c.Description}</p>
+                    <div class="font-bold text-brand-blue mb-4">${c.Price} DA</div>
+                    <button onclick="submitReceipt('${c.CourseID}')" class="w-full py-2 bg-brand-yellow text-brand-darkblue font-bold rounded-xl">رفع إثبات الدفع</button>
+                </div>
+            `).join('');
+            loadForumMessages('studentForumList');
+        }
+
+        async function submitReceipt(courseId) {
+            const url = prompt("أدخل رابط صورة وصل الدفع (CCP/BaridiMob):");
+            if (url) {
+                await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'approveSub', subId: subId })
+                    body: JSON.stringify({ action: 'submitReceipt', studentEmail: currentUser.student.Email, courseId: courseId, receiptUrl: url })
                 });
-                const data = await res.json();
-                alert(data.message);
-                showAdminPanel();
-            } catch (err) {
-                alert("خطأ في التفعيل: " + err.toString());
+                alert("تم إرسال الوصل بنجاح، سيتم التأكيد وتفعيل الدورة.");
             }
         }
 
-        // المبادأة التشغيلية عند تحميل الصفحة
-        updateNav();
+        async function loadForumMessages(elementId) {
+            const msgs = await fetch(`${API_URL}?action=getForum`).then(r => r.json());
+            const container = document.getElementById(elementId);
+            container.innerHTML = msgs.map(m => `
+                <div class="p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-sm relative">
+                    <div class="font-bold text-brand-blue dark:text-brand-yellow">${m.SenderName} (${m.SenderRole})</div>
+                    <p class="mt-1">${m.MessageText}</p>
+                    ${currentUser?.role === 'teacher' ? `<button onclick="deleteForumMessage('${m.MessageID}')" class="text-red-500 text-xs absolute top-2 left-2">حذف</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        async function loadTeacherForum() { loadForumMessages('teacherForumList'); }
+
+        async function postForumMessage() {
+            const input = document.getElementById('forumMsgInput');
+            if (!input.value) return;
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'postForum',
+                    email: currentUser.student?.Email || "teacher@nawat.com",
+                    name: currentUser.name || (currentUser.student.FirstName + ' ' + currentUser.student.LastName),
+                    role: currentUser.role === 'teacher' ? 'الأستاذة' : 'طالب',
+                    messageText: input.value
+                })
+            });
+            input.value = '';
+            loadForumMessages('studentForumList');
+        }
+
+        async function deleteForumMessage(msgId) {
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteForum', messageId: msgId }) });
+            loadTeacherForum();
+        }
     </script>
 </body>
 </html>
