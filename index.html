@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة نواة - مادة العلوم الطبيعية للبكالوريا</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <title>منصة نواة - علوم الطبيعة والحياة للبكالوريا</title>
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,207 +15,365 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { blue: '#104a8e', darkblue: '#0a3262', yellow: '#ecc427', lightbg: '#f8fafc' }
+                        brand: {
+                            blue: '#104a8e',
+                            darkblue: '#0a3262',
+                            yellow: '#ecc427',
+                            lightbg: '#f8fafc',
+                            accent: '#3b82f6'
+                        }
                     },
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s ease-out forwards'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.03)' },
+                        },
+                        fadeIn: {
+                            'from': { opacity: '0' },
+                            'to': { opacity: '1' }
+                        },
+                        slideUp: {
+                            'from': { opacity: '0', transform: 'translateY(20px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
                 }
             }
         }
     </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(30, 41, 59, 0.8);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #104a8e 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #ecc427 0%, #fef08a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body class="bg-brand-lightbg text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-brand-lightbg text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-300 antialiased selection:bg-brand-yellow selection:text-brand-darkblue">
 
-    <!-- رابط السيرفر API -->
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbznfygYtWYTP4t-573gO9gkoWvFZp3ETpa29YLIO1oVvKsYcuqELhxceH2meKJxC9lqXQ/exec";
+        // رابط API الجديد المحدث
+        const API_URL = "https://script.google.com/macros/s/AKfycbx7_POjhvxUy81_-Bj846NHlKfO-rZPQKuWAPq6u7KE5UTa6VBnfftBTGWMyUW_KARBvg/exec";
         let currentUser = null;
+
+        async function postData(data) {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(data)
+            });
+            return await res.json();
+        }
     </script>
 
-    <!-- الهيدر الرئيسي -->
-    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-all">
+        <div class="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+            
+            <!-- الشعار واستبدال اللوقو -->
             <div class="flex items-center gap-6">
-                <a href="#" onclick="showSection('landingSection')" class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold text-xl shadow-md">
-                        <i class="fa-solid font-bold">N</i>
+                <a href="#" onclick="showSection('landingSection')" class="flex items-center gap-3 group">
+                    <!-- مكان وضع اللوقو الخاص بك -->
+                    <div class="relative flex items-center justify-center">
+                        <img id="platformLogo" src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/logo.png" 
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/45/104a8e/ffffff?text=N';" 
+                             alt="شعار منصة نواة" 
+                             class="w-11 h-11 object-contain rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300">
                     </div>
-                    <span class="text-2xl font-extrabold text-brand-blue dark:text-white tracking-wide">منصة نواة</span>
+                    <span class="text-2xl font-black tracking-wide gradient-text">منصة نواة</span>
                 </a>
-                <button id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+
+                <!-- زر وضع النهار / الليل -->
+                <button id="themeToggle" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:ring-2 ring-brand-blue/30 transition-all">
                     <i class="fa-solid fa-moon dark:hidden text-lg"></i>
                     <i class="fa-solid fa-sun hidden dark:block text-lg text-brand-yellow"></i>
                 </button>
             </div>
 
+            <!-- أزرار الحساب والتحكم -->
             <div id="authButtons" class="flex items-center gap-3">
-                <button onclick="openModal('loginModal')" class="px-5 py-2.5 rounded-xl border border-brand-blue text-brand-blue dark:text-white font-semibold hover:bg-brand-blue hover:text-white transition">تسجيل الدخول</button>
-                <button onclick="openModal('registerModal')" class="px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold hover:bg-brand-darkblue transition">إنشاء حساب</button>
+                <button onclick="openModal('loginModal')" class="px-5 py-2.5 rounded-xl border-2 border-brand-blue/20 text-brand-blue dark:text-white font-bold hover:border-brand-blue hover:bg-brand-blue hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">تسجيل الدخول</button>
+                <button onclick="openModal('registerModal')" class="px-5 py-2.5 rounded-xl bg-brand-blue text-white font-bold hover:bg-brand-darkblue transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5">إنشاء حساب</button>
             </div>
 
             <div id="userMenu" class="hidden flex items-center gap-4">
-                <span id="userNameDisplay" class="font-bold text-brand-blue dark:text-brand-yellow"></span>
-                <button onclick="logout()" class="text-sm bg-red-100 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-200">خروج</button>
+                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3.5 py-1.5 rounded-xl">
+                    <i class="fa-solid fa-user-circle text-brand-blue dark:text-brand-yellow text-xl"></i>
+                    <span id="userNameDisplay" class="font-bold text-brand-blue dark:text-brand-yellow"></span>
+                </div>
+                <button onclick="logout()" class="text-sm bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400 px-3.5 py-2 rounded-xl hover:bg-red-100 font-bold transition">خروج</button>
             </div>
         </div>
     </header>
 
-    <!-- الواجهة الرئيسية Landing Page -->
-    <main id="landingSection" class="view-section">
-        <section class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-brand-yellow/20 text-brand-blue dark:text-brand-yellow font-bold text-sm">المنصة الأولى للبكالوريا</span>
-                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-brand-blue dark:text-white">منصة نواة</h1>
-                <p class="text-xl text-slate-600 dark:text-slate-300 font-medium">منصة متخصصة لتدريس مادة العلوم الطبيعية لطلبة البكالوريا. نضمن لك الفهم المنهجي والدقيق لنيل أعلى العلامات.</p>
-                <button onclick="openModal('registerModal')" class="px-8 py-3.5 rounded-xl bg-brand-yellow text-brand-darkblue font-bold text-lg hover:bg-yellow-400 transition shadow-lg">ابدأ التعلم الآن</button>
+    <!-- الواجهة الرئيسية (Landing Page) -->
+    <main id="landingSection" class="view-section animate-fade-in">
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+            <div class="space-y-8 animate-slide-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-yellow/20 border border-brand-yellow/40 text-brand-blue dark:text-brand-yellow font-extrabold text-sm shadow-sm animate-pulse-glow">
+                    <i class="fa-solid fa-atom text-base"></i>
+                    <span>المرجع الأول لمادة العلوم الطبيعية - BAC</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black leading-tight">
+                    انطلق نحو العلامة الكاملة في <span class="gradient-text">العلوم الطبيعية</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                    منصة تفاعلية مخصصة لشرح المنهجية الوزارية الجديدة، الاستدلال العلمي، والتحليل الدقيق للوثائق تحت إشراف أستاذ المادة.
+                </p>
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    <button onclick="openModal('registerModal')" class="px-8 py-4 rounded-2xl bg-brand-yellow text-brand-darkblue font-black text-lg hover:bg-yellow-400 transition-all duration-300 shadow-xl hover:shadow-yellow-500/20 hover:-translate-y-1 flex items-center gap-3">
+                        <span>انضم إلينا الآن</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <a href="#methodology" class="px-7 py-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-100 transition border border-slate-200 dark:border-slate-700 shadow-sm">
+                        اكتشف المنهجية
+                    </a>
+                </div>
             </div>
-            <!-- مكان فيديو الأنيميشن GitHub -->
-            <div class="relative w-full h-80 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex items-center justify-center">
-                <video class="w-full h-full object-cover" autoplay loop muted playsinline>
-                    <source src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/animation.mp4" type="video/mp4"" type="video/mp4">
-                    الفيديو غير متوفر حالياً
-                </video>
+            
+            <!-- عرض الفيديو مع خلفية بيضاء صافية بدون سواد -->
+            <div class="relative flex justify-center items-center">
+                <!-- إضاءة خلفية متحركة -->
+                <div class="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-yellow-500/20 rounded-3xl blur-2xl animate-float"></div>
+                
+                <!-- إطار الفيديو بخلفية بيضاء ونظيفة -->
+                <div class="relative w-full max-w-lg aspect-video rounded-3xl bg-white dark:bg-slate-900 border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden flex items-center justify-center p-2">
+                    <video class="w-full h-full object-contain rounded-2xl bg-white" autoplay loop muted playsinline>
+                        <source src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/animation.mp4" type="video/mp4">
+                        متصفحك لا يدعم تشغيل الفيديو
+                    </video>
+                </div>
             </div>
         </section>
 
-        <!-- الإحصائيات -->
-        <section class="bg-white dark:bg-slate-800 border-y border-slate-200 dark:border-slate-700 py-6">
-            <div class="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-6 text-center">
-                <div class="flex items-center gap-3"><i class="fa-brands fa-youtube text-3xl text-red-600"></i><span class="text-2xl font-bold">163K</span></div>
-                <div class="flex items-center gap-3"><i class="fa-brands fa-instagram text-3xl text-pink-600"></i><span class="text-2xl font-bold">188K</span></div>
-                <div class="flex items-center gap-2 text-brand-blue dark:text-brand-yellow font-extrabold text-xl"><i class="fa-solid fa-award"></i><span>نعدك بالتفوق في منصتنا</span></div>
+        <!-- قسم ركائز المنهجية العلمية التفاعلي -->
+        <section id="methodology" class="py-20 bg-slate-100/70 dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-3xl font-black text-brand-blue dark:text-brand-yellow mb-4">ركائز المنهجية العلمية في منصة نواة</h2>
+                    <p class="text-slate-600 dark:text-slate-400 font-medium">نضمن لك التمكن التام من آليات الإجابة الدقيقة لحصد أعلى النقاط في البكالوريا.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-card p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/40 text-brand-blue dark:text-blue-400 flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-microscope"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">1. استغلال الوثائق</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">تفكيك الجداول والمنحنيات والنتائج التجريبية واستخراج المعلومات الأساسية بطريقة منظمية ومقننة.</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                        <div class="w-16 h-16 rounded-2xl bg-yellow-100 dark:bg-yellow-900/40 text-brand-yellow flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-dna"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">2. الاستدلال العلمي</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">الربط المنطقي بين المكتسبات القبلية والنتائج التجريبية لبناء تفسيرات علمية دقيقة لا تقبل الشك.</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                        <div class="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-signature"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">3. صياغة النص العلمي</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">الهيكلة النموذجية للإجابة: مقدمة بتأطير المشكلة، عرض مدعم بالمصطلحات العلمية الدقيقة، وخاتمة تركيبية.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- الأستاذة والمميزات -->
-        <section class="max-w-7xl mx-auto px-6 py-20">
-            <h2 class="text-3xl font-bold text-center mb-12 text-brand-blue dark:text-white">طريقتنا في التدريس أونلاين</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                <div class="space-y-6">
-                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">دروس مفصلة</h3><p class="text-sm text-slate-500">شروحات دقيقة لكافة وحدات المقرر.</p></div>
-                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">+18 في التفوق</h3><p class="text-sm text-slate-500">تدريب مكثف على أعلى منهجية.</p></div>
+        <!-- قسم التعريف بالأستاذة -->
+        <section class="max-w-7xl mx-auto px-6 py-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="flex justify-center relative">
+                    <div class="absolute -inset-2 bg-gradient-to-tr from-brand-blue to-brand-yellow rounded-3xl blur-lg opacity-40"></div>
+                    <div class="relative w-72 h-96 rounded-3xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl">
+                        <img src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/prof.jpg" alt="صورة الأستاذة" class="w-full h-full object-cover">
+                    </div>
                 </div>
-                <div class="flex justify-center">
-                    <div class="w-64 h-80 rounded-3xl bg-brand-blue overflow-hidden shadow-2xl p-2 border-4 border-white"><img src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/prof.jpg" alt="صورة الأستاذة" class="w-full h-full object-cover rounded-2xl"></div>
-                </div>
+
                 <div class="space-y-6">
-                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">تعلم المنهجية من الصفر</h3><p class="text-sm text-slate-500">التركيز على التحليل والاستدلال العلمي.</p></div>
-                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border dark:border-slate-700"><h3 class="font-bold mb-2">متابعة مستمرة للطلبة</h3><p class="text-sm text-slate-500">تواصل مباشر في المنتدى الخاص.</p></div>
+                    <span class="px-4 py-1.5 rounded-full bg-brand-blue/10 text-brand-blue dark:text-brand-yellow font-bold text-sm">خبرة تميز ورعاية</span>
+                    <h2 class="text-3xl md:text-4xl font-black text-brand-blue dark:text-white">طريقتنا المبتكرة في التدريس</h2>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                        نقدم للطلبة مرافقة بيداغوجية كاملة، تبدأ من شرح النظريات وتفكيك الإشكالات العلمية، وصولاً إلى التدريب المكثف على حل المواضيع النموذجية بالمنهجية الرسمية للتصحيح.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border dark:border-slate-700 shadow-sm">
+                            <div class="text-2xl font-extrabold text-brand-blue dark:text-brand-yellow mb-1">+100</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-bold">تمرين وحسابات نموذجية</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border dark:border-slate-700 shadow-sm">
+                            <div class="text-2xl font-extrabold text-brand-blue dark:text-brand-yellow mb-1">100%</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-bold">متابعة منهجية دقيقة</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- لوحة تحكم الأستاذة (Teacher Dashboard) -->
-    <section id="teacherSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12">
-        <h2 class="text-3xl font-bold mb-8 text-brand-blue dark:text-white">لوحة تحكم الأستاذة (الإدارة)</h2>
+    <section id="teacherSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12 animate-fade-in">
+        <div class="flex items-center justify-between mb-8 pb-4 border-b dark:border-slate-800">
+            <h2 class="text-3xl font-black text-brand-blue dark:text-white">لوحة تحكم الأستاذة</h2>
+            <span class="px-4 py-1.5 rounded-xl bg-brand-yellow/20 text-brand-darkblue font-bold text-sm">معدّل الأدمن</span>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- إضافة/تعديل دورة -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700">
-                <h3 class="text-xl font-bold mb-4">إضافة أو تعديل دورة</h3>
-                <form id="courseForm" onsubmit="handleSaveCourse(event)" class="space-y-4">
-                    <input type="text" id="courseId" placeholder="معرف الدورة (مثال: C1)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                    <input type="text" id="courseTitle" placeholder="عنوان الدورة" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                    <textarea id="courseDesc" placeholder="وصف الدورة" required class="w-full p-3 rounded-xl border dark:bg-slate-700"></textarea>
-                    <input type="number" id="coursePrice" placeholder="السعر (DA)" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                    <input type="text" id="videoLinks" placeholder="روابط الفيديوهات (Google Drive مفصولة بفواصل)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                    <input type="text" id="fileLinks" placeholder="روابط الملفات (PDF مفصولة بفواصل)" class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                    <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">حفظ الدورة</button>
+            <!-- إضافة وتعديل الدورات -->
+            <div class="glass-card p-6 rounded-3xl shadow-lg space-y-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-folder-plus text-brand-blue"></i>
+                    <span>إضافة / تعديل دورة جديدة</span>
+                </h3>
+                <form onsubmit="handleSaveCourse(event)" class="space-y-4">
+                    <input type="text" id="courseId" placeholder="معرف الدورة (مثل: C1)" class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                    <input type="text" id="courseTitle" placeholder="عنوان الدورة (مثل: تركيب البروتين)" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                    <textarea id="courseDesc" placeholder="وصف محتوى الدورة والتمارين" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium h-28"></textarea>
+                    <input type="number" id="coursePrice" placeholder="سعر الدورة (DA)" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                    <input type="text" id="videoLinks" placeholder="روابط الدروس والأنيميشن (Google Drive)" class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                    <input type="text" id="fileLinks" placeholder="روابط سلاسل التمارين والحلول (PDF)" class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                    <button type="submit" class="w-full py-3.5 bg-brand-blue text-white font-bold rounded-xl hover:bg-brand-darkblue transition shadow-md">حفظ ونشر الدورة</button>
                 </form>
             </div>
 
-            <!-- المنتدى الخاص بالطلبة للتحكم -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700">
-                <h3 class="text-xl font-bold mb-4">إدارة رسائل المنتدى</h3>
-                <div id="teacherForumList" class="space-y-4 h-96 overflow-y-auto"></div>
+            <!-- إدارة المنتدى والإجابات -->
+            <div class="glass-card p-6 rounded-3xl shadow-lg flex flex-col">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-brand-yellow"></i>
+                    <span>أسئلة ومناقشات الطلاب</span>
+                </h3>
+                <div id="teacherForumList" class="space-y-3 flex-1 overflow-y-auto max-h-[480px] pr-2"></div>
             </div>
         </div>
     </section>
 
-    <!-- لوحة الطالب (Student Dashboard) -->
-    <section id="studentSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12">
-        <h2 class="text-3xl font-bold mb-8 text-brand-blue dark:text-white">فضاء الطالب</h2>
-        
+    <!-- فضاء الطالب (Student Dashboard) -->
+    <section id="studentSection" class="view-section hidden max-w-7xl mx-auto px-6 py-12 animate-fade-in">
+        <h2 class="text-3xl font-black mb-8 text-brand-blue dark:text-white">فضاء التعلم الخاص بك</h2>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- قائمة الدورات المتاحة والاشتراك -->
+            <!-- قائمة الدورات والمحتوى -->
             <div class="lg:col-span-2 space-y-6">
-                <h3 class="text-xl font-bold">الدورات والمحتوى المتاح</h3>
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-brand-blue"></i>
+                    <span>الدورات التدريبية المتاحة</span>
+                </h3>
                 <div id="studentCoursesList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- المنتدى العام -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow border border-slate-200 dark:border-slate-700 flex flex-col h-[500px]">
-                <h3 class="text-xl font-bold mb-4">منتدى المناقشة العام</h3>
-                <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-4"></div>
+            <!-- منتدى الأسئلة والتفاعل -->
+            <div class="glass-card p-6 rounded-3xl shadow-lg flex flex-col h-[550px]">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots text-brand-blue"></i>
+                    <span>منتدى الأسئلة والمنهجية</span>
+                </h3>
+                <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-4 pr-1"></div>
                 <div class="flex gap-2">
-                    <input type="text" id="forumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-3 rounded-xl border dark:bg-slate-700">
-                    <button onclick="postForumMessage()" class="px-5 bg-brand-blue text-white font-bold rounded-xl"><i class="fa-solid fa-paper-plane"></i></button>
+                    <input type="text" id="forumMsgInput" placeholder="اطرح استفسارك هنا..." class="flex-1 p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                    <button onclick="postForumMessage()" class="px-5 bg-brand-blue text-white font-bold rounded-xl hover:bg-brand-darkblue transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Modals (تسجيل / دخول) -->
-    <div id="registerModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeModal('registerModal')" class="absolute top-4 left-4"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-2xl font-bold mb-6 text-brand-blue dark:text-white">إنشاء حساب جديد</h3>
-            <form onsubmit="handleRegister(event)" class="space-y-3">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="regFirstName" placeholder="الاسم" required class="p-3 rounded-xl border dark:bg-slate-700">
-                    <input type="text" id="regLastName" placeholder="اللقب" required class="p-3 rounded-xl border dark:bg-slate-700">
+    <!-- Modals (النوافذ المنبثقة) -->
+    <!-- نافذة التسجيل -->
+    <div id="registerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-8 relative shadow-2xl animate-slide-up border dark:border-slate-800">
+            <button onclick="closeModal('registerModal')" class="absolute top-5 left-5 text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-black mb-6 text-brand-blue dark:text-white">إنشاء حساب طالب جديد</h3>
+            <form onsubmit="handleRegister(event)" class="space-y-3.5">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="regFirstName" placeholder="الاسم" required class="p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                    <input type="text" id="regLastName" placeholder="اللقب" required class="p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
                 </div>
-                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                <input type="password" id="regPassword" placeholder="كلمة السر" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                <input type="tel" id="regPhone" placeholder="رقم الهاتف" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="regWilaya" placeholder="الولاية" required class="p-3 rounded-xl border dark:bg-slate-700">
-                    <input type="text" id="regCommune" placeholder="البلدية" required class="p-3 rounded-xl border dark:bg-slate-700">
+                <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                <input type="password" id="regPassword" placeholder="كلمة السر" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                <input type="tel" id="regPhone" placeholder="رقم الهاتف" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="regWilaya" placeholder="الولاية" required class="p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
+                    <input type="text" id="regCommune" placeholder="البلدية" required class="p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 text-sm">
                 </div>
-                <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">تأكيد التسجيل</button>
+                <button type="submit" class="w-full py-3.5 bg-brand-blue text-white font-bold rounded-xl hover:bg-brand-darkblue transition shadow-lg mt-2">تأكيد التسجيل</button>
             </form>
         </div>
     </div>
 
-    <div id="loginModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeModal('loginModal')" class="absolute top-4 left-4"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-2xl font-bold mb-6 text-brand-blue dark:text-white">تسجيل الدخول</h3>
+    <!-- نافذة الدخول -->
+    <div id="loginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-8 relative shadow-2xl animate-slide-up border dark:border-slate-800">
+            <button onclick="closeModal('loginModal')" class="absolute top-5 left-5 text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-black mb-6 text-brand-blue dark:text-white">تسجيل الدخول</h3>
             <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                <input type="password" id="loginPassword" placeholder="كلمة السر" required class="w-full p-3 rounded-xl border dark:bg-slate-700">
-                <button type="submit" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl">دخول</button>
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                <input type="password" id="loginPassword" placeholder="كلمة السر" required class="w-full p-3.5 rounded-xl border dark:bg-slate-800 dark:border-slate-700 font-medium">
+                <button type="submit" class="w-full py-3.5 bg-brand-blue text-white font-bold rounded-xl hover:bg-brand-darkblue transition shadow-lg">تسجيل الدخول</button>
             </form>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-12 pb-8 mt-20">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 mt-24">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
             <div>
-                <h4 class="text-xl font-bold text-brand-blue dark:text-white mb-3">منصة نواة</h4>
-                <p class="text-slate-500 text-sm mb-2">جميع الحقوق محفوظة © 2026</p>
-                <p class="text-slate-600 text-sm">تطوير البرمجيات: <a href="https://your-portfolio-link.com" target="_blank" class="text-brand-blue font-bold hover:underline">نوفل</a></p>
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/logo.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/104a8e/ffffff?text=N';" alt="Logo" class="w-9 h-9 object-contain">
+                    <span class="text-2xl font-black text-brand-blue dark:text-white">منصة نواة</span>
+                </div>
+                <p class="text-slate-500 text-sm leading-relaxed mb-4">المنصة التعليمية الشاملة لمادة العلوم الطبيعية والحياة لطلاب البكالوريا.</p>
+                <p class="text-xs text-slate-400 font-bold">جميع الحقوق محفوظة © 2026</p>
+                <p class="text-xs text-slate-500 mt-2">تطوير وتصميم: <a href="https://your-portfolio-link.com" target="_blank" class="text-brand-blue font-bold hover:underline">نوفل</a></p>
             </div>
             <div>
-                <h4 class="text-lg font-bold mb-3">الصفحات</h4>
-                <ul class="space-y-2 text-sm text-slate-600">
-                    <li><a href="#" onclick="showSection('landingSection')">الرئيسية</a></li>
-                    <li><a href="#" onclick="openModal('registerModal')">إنشاء حساب</a></li>
-                    <li><a href="#" onclick="openModal('loginModal')">تسجيل الدخول</a></li>
+                <h4 class="text-base font-bold mb-4 text-slate-800 dark:text-slate-200">الوصول السريع</h4>
+                <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
+                    <li><a href="#" onclick="showSection('landingSection')" class="hover:text-brand-blue">الرئيسية</a></li>
+                    <li><a href="#" onclick="openModal('registerModal')" class="hover:text-brand-blue">إنشاء حساب جديد</a></li>
+                    <li><a href="#" onclick="openModal('loginModal')" class="hover:text-brand-blue">دخول المنصة</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-lg font-bold mb-3">حسابات التواصل</h4>
-                <div class="flex flex-col space-y-2 text-sm">
-                    <a href="#" class="text-slate-600 hover:text-pink-600"><i class="fa-brands fa-instagram"></i> إنستغرام الأستاذة 1</a>
-                    <a href="#" class="text-slate-600 hover:text-pink-600"><i class="fa-brands fa-instagram"></i> إنستغرام الأستاذة 2</a>
-                    <a href="#" class="text-slate-600 hover:text-red-600"><i class="fa-brands fa-youtube"></i> قناة اليوتيوب</a>
+                <h4 class="text-base font-bold mb-4 text-slate-800 dark:text-slate-200">التواصل والمتابعة</h4>
+                <div class="flex flex-col space-y-3 text-sm">
+                    <a href="#" class="text-slate-600 dark:text-slate-400 hover:text-pink-600 flex items-center gap-2"><i class="fa-brands fa-instagram text-lg"></i> إنستغرام الأستاذة 1</a>
+                    <a href="#" class="text-slate-600 dark:text-slate-400 hover:text-pink-600 flex items-center gap-2"><i class="fa-brands fa-instagram text-lg"></i> إنستغرام الأستاذة 2</a>
+                    <a href="#" class="text-slate-600 dark:text-slate-400 hover:text-red-600 flex items-center gap-2"><i class="fa-brands fa-youtube text-lg"></i> قناة اليوتيوب الرسمية</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Logic Script -->
+    <!-- Scripts Logic -->
     <script>
         document.getElementById('themeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
 
@@ -237,8 +397,8 @@
                 wilaya: document.getElementById('regWilaya').value,
                 commune: document.getElementById('regCommune').value
             };
-            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
-            alert(res.message || "تم إرسال الطلب بنجاح، يرجى انتظار تفعيل الحساب.");
+            const res = await postData(data);
+            alert(res.message || "تم التسجيل بنجاح!");
             closeModal('registerModal');
         }
 
@@ -249,7 +409,7 @@
                 email: document.getElementById('loginEmail').value,
                 password: document.getElementById('loginPassword').value
             };
-            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
+            const res = await postData(data);
             
             if (res.status === 'success') {
                 currentUser = res;
@@ -288,32 +448,33 @@
                 videoLinks: document.getElementById('videoLinks').value,
                 fileLinks: document.getElementById('fileLinks').value
             };
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-            alert("تم حفظ الدورة بنجاح");
+            const res = await postData(data);
+            alert(res.message);
         }
 
         async function loadStudentDashboard() {
             const courses = await fetch(`${API_URL}?action=getCourses`).then(r => r.json());
             const list = document.getElementById('studentCoursesList');
-            list.innerHTML = courses.map(c => `
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <h4 class="font-bold text-xl mb-2">${c.Title}</h4>
-                    <p class="text-sm text-slate-500 mb-4">${c.Description}</p>
-                    <div class="font-bold text-brand-blue mb-4">${c.Price} DA</div>
-                    <button onclick="submitReceipt('${c.CourseID}')" class="w-full py-2 bg-brand-yellow text-brand-darkblue font-bold rounded-xl">رفع إثبات الدفع</button>
-                </div>
-            `).join('');
+            if(courses.length === 0) {
+                list.innerHTML = `<p class="text-slate-500 font-medium">لا توجد دورات مضافة حالياً.</p>`;
+            } else {
+                list.innerHTML = courses.map(c => `
+                    <div class="glass-card p-6 rounded-3xl shadow-sm hover:shadow-md transition">
+                        <h4 class="font-bold text-xl mb-2 text-brand-blue dark:text-brand-yellow">${c.Title}</h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">${c.Description}</p>
+                        <div class="font-extrabold text-lg text-brand-blue dark:text-white mb-4">${c.Price} DA</div>
+                        <button onclick="submitReceipt('${c.CourseID}')" class="w-full py-3 bg-brand-yellow text-brand-darkblue font-black rounded-xl hover:bg-yellow-400 transition shadow">رفع إثبات الدفع</button>
+                    </div>
+                `).join('');
+            }
             loadForumMessages('studentForumList');
         }
 
         async function submitReceipt(courseId) {
             const url = prompt("أدخل رابط صورة وصل الدفع (CCP/BaridiMob):");
             if (url) {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'submitReceipt', studentEmail: currentUser.student.Email, courseId: courseId, receiptUrl: url })
-                });
-                alert("تم إرسال الوصل بنجاح، سيتم التأكيد وتفعيل الدورة.");
+                const res = await postData({ action: 'submitReceipt', studentEmail: currentUser.student.Email, courseId: courseId, receiptUrl: url });
+                alert(res.message);
             }
         }
 
@@ -321,10 +482,10 @@
             const msgs = await fetch(`${API_URL}?action=getForum`).then(r => r.json());
             const container = document.getElementById(elementId);
             container.innerHTML = msgs.map(m => `
-                <div class="p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-sm relative">
+                <div class="p-3.5 bg-slate-100/80 dark:bg-slate-800 rounded-2xl text-sm relative border dark:border-slate-700">
                     <div class="font-bold text-brand-blue dark:text-brand-yellow">${m.SenderName} (${m.SenderRole})</div>
-                    <p class="mt-1">${m.MessageText}</p>
-                    ${currentUser?.role === 'teacher' ? `<button onclick="deleteForumMessage('${m.MessageID}')" class="text-red-500 text-xs absolute top-2 left-2">حذف</button>` : ''}
+                    <p class="mt-1 text-slate-700 dark:text-slate-300">${m.MessageText}</p>
+                    ${currentUser?.role === 'teacher' ? `<button onclick="deleteForumMessage('${m.MessageID}')" class="text-red-500 hover:text-red-700 text-xs font-bold absolute top-3 left-3">حذف</button>` : ''}
                 </div>
             `).join('');
         }
@@ -334,22 +495,19 @@
         async function postForumMessage() {
             const input = document.getElementById('forumMsgInput');
             if (!input.value) return;
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'postForum',
-                    email: currentUser.student?.Email || "teacher@nawat.com",
-                    name: currentUser.name || (currentUser.student.FirstName + ' ' + currentUser.student.LastName),
-                    role: currentUser.role === 'teacher' ? 'الأستاذة' : 'طالب',
-                    messageText: input.value
-                })
+            await postData({
+                action: 'postForum',
+                email: currentUser.student?.Email || "teacher@nawat.com",
+                name: currentUser.name || (currentUser.student.FirstName + ' ' + currentUser.student.LastName),
+                role: currentUser.role === 'teacher' ? 'الأستاذة' : 'طالب',
+                messageText: input.value
             });
             input.value = '';
             loadForumMessages('studentForumList');
         }
 
         async function deleteForumMessage(msgId) {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteForum', messageId: msgId }) });
+            await postData({ action: 'deleteForum', messageId: msgId });
             loadTeacherForum();
         }
     </script>
