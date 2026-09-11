@@ -28,20 +28,24 @@
         html, body { min-height: 100vh; display: flex; flex-direction: column; scroll-behavior: smooth; }
         main, section.view-section { flex: 1; }
         .btn-hover-effect { transition: all 0.3s ease; }
-        .btn-hover-effect:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(0,0,0,0.2); }
+        .btn-hover-effect:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body class="bg-brand-lightbg text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased selection:bg-brand-yellow selection:text-brand-darkblue">
 
     <script>
-        // الرابط الجديد الخاص بك
-        const API_URL = "https://script.google.com/macros/s/AKfycbzX3naf8SpIsv208f9PbwKhjx066npjkLLm6SE4eZY9Qm6JY_-fVyR6EvS79_SGlOdv-w/exec";
+        // رابط Web App الخاص بك
+        const API_URL = "https://script.google.com/macros/s/AKfycbw-gHtQSZJ-7-K_MqUitlG76qn3ctcVul_B85wr6JwnsU1hDMjqTFYiak7JdsXZSVi2hA/exec";
         let currentUser = null;
         let syncInterval = null;
 
         async function postData(data) {
-            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-            return await res.json();
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+                return await res.json();
+            } catch(e) {
+                return { status: "error", message: "حدث خطأ في الاتصال بالسيرفر" };
+            }
         }
 
         async function fetchData(action, params = '') {
@@ -64,7 +68,7 @@
         }
     </script>
 
-    <!-- Header -->
+    <!-- الهيدر -->
     <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="#" onclick="showSection('landingSection')" class="flex items-center gap-3 group">
@@ -127,13 +131,12 @@
             </div>
         </section>
 
-        <!-- قسم الأستاذة -->
+        <!-- قسم التعريف بالأستاذة -->
         <section id="teacherBio" class="max-w-7xl mx-auto px-6">
             <div class="glass-card rounded-[2.5rem] p-8 md:p-12 border border-slate-200 dark:border-slate-700 grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
                 <div class="flex flex-col items-center text-center space-y-5">
                     <div class="relative w-56 h-56 rounded-full overflow-hidden shadow-2xl border-4 border-brand-yellow p-1 bg-white dark:bg-slate-800">
-                        <!-- تم وضع الصورة الاحترافية المرفوعة مسبقاً هنا -->
-                        <img src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/prof.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/250/104a8e/ffffff?text=الأستاذة';" alt="الأستاذة" class="w-full h-full object-cover rounded-full">
+                        <img src="https://raw.githubusercontent.com/nfendi-sudo/platform/main/logo.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/250/104a8e/ffffff?text=الأستاذة';" alt="الأستاذة" class="w-full h-full object-cover rounded-full">
                     </div>
                     <div>
                         <h3 class="text-2xl font-black text-brand-blue dark:text-brand-yellow">أستاذة مادة العلوم الطبيعية</h3>
@@ -177,6 +180,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- نموذج حفظ أو تعديل الدورة -->
             <div class="glass-card p-6 rounded-3xl space-y-4">
                 <h3 id="formTitle" class="font-bold text-xl border-b pb-2 dark:border-slate-700">إضافة / تعديل دورة</h3>
                 <form onsubmit="handleSaveCourse(event)" class="space-y-4 pt-2">
@@ -188,7 +192,7 @@
                     <div class="border-t border-slate-100 dark:border-slate-700 pt-4">
                         <div class="flex justify-between items-center mb-3">
                             <label class="text-sm font-bold text-brand-blue dark:text-brand-yellow"><i class="fa-solid fa-video ml-1"></i> الفيديوهات:</label>
-                            <button type="button" onclick="addVideoInput()" class="text-xs bg-blue-50 hover:bg-blue-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-brand-blue dark:text-blue-300 px-3 py-1.5 rounded-lg font-bold transition">إضافة فيديو</button>
+                            <button type="button" onclick="addVideoInput()" class="text-xs bg-blue-50 hover:bg-blue-100 dark:bg-slate-700 text-brand-blue dark:text-blue-300 px-3 py-1.5 rounded-lg font-bold transition">إضافة فيديو</button>
                         </div>
                         <div id="videosContainer" class="space-y-2"></div>
                     </div>
@@ -196,7 +200,7 @@
                     <div class="border-t border-slate-100 dark:border-slate-700 pt-4">
                         <div class="flex justify-between items-center mb-3">
                             <label class="text-sm font-bold text-green-600 dark:text-green-400"><i class="fa-solid fa-file-pdf ml-1"></i> ملفات PDF:</label>
-                            <button type="button" onclick="addFileInput()" class="text-xs bg-green-50 hover:bg-green-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-lg font-bold transition">إضافة ملف</button>
+                            <button type="button" onclick="addFileInput()" class="text-xs bg-green-50 hover:bg-green-100 dark:bg-slate-700 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-lg font-bold transition">إضافة ملف</button>
                         </div>
                         <div id="filesContainer" class="space-y-2"></div>
                     </div>
@@ -204,16 +208,21 @@
                 </form>
             </div>
 
+            <!-- قائمة الدورات المضافة -->
             <div class="glass-card p-6 rounded-3xl space-y-4">
                 <h3 class="font-bold text-xl border-b pb-2 dark:border-slate-700">إدارة الدورات المنشورة</h3>
                 <div id="teacherCoursesList" class="space-y-3 max-h-[650px] overflow-y-auto pr-1"></div>
             </div>
 
+            <!-- المنتدى التفاعلي للأستاذة -->
             <div class="glass-card p-6 rounded-3xl flex flex-col h-[700px]">
-                <h3 class="font-bold text-xl mb-4 border-b pb-2 dark:border-slate-700">أسئلة الطلاب وتفاعل المنتدى</h3>
+                <h3 class="font-bold text-xl mb-4 border-b pb-2 dark:border-slate-700 flex items-center justify-between">
+                    <span>أسئلة الطلاب والمنتدى</span>
+                    <span class="text-xs font-normal text-green-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> مباشر</span>
+                </h3>
                 <div id="teacherForumList" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 scrollbar-thin"></div>
                 <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <input type="text" id="tForumMsgInput" placeholder="أجيبي على سؤال..." class="flex-1 p-2 bg-transparent text-sm outline-none">
+                    <input type="text" id="tForumMsgInput" placeholder="أجيبي على أسئلة الطلاب..." class="flex-1 p-2 bg-transparent text-sm outline-none" onkeypress="if(event.key==='Enter') postForumMessage('teacher')">
                     <button onclick="postForumMessage('teacher')" class="px-5 bg-brand-yellow text-brand-darkblue rounded-xl font-bold hover:bg-yellow-400 transition"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -224,6 +233,7 @@
     <section id="studentSection" class="view-section hidden max-w-7xl mx-auto px-6 py-10">
         <h2 class="text-3xl font-black mb-8 text-brand-blue dark:text-white border-b border-slate-200 dark:border-slate-800 pb-4">فضاء التعلم الخاص بك</h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- قائمة دورات الطالب -->
             <div class="lg:col-span-2 space-y-8">
                 <div>
                     <h3 class="font-bold text-2xl mb-6">الدورات المتاحة لك</h3>
@@ -231,24 +241,25 @@
                 </div>
             </div>
 
+            <!-- المنتدى التفاعلي للطلاب -->
             <div class="glass-card p-6 rounded-3xl flex flex-col h-[650px]">
-                <h3 class="font-bold text-xl mb-4 border-b pb-2 dark:border-slate-700">المنتدى التفاعلي مع الأستاذة</h3>
+                <h3 class="font-bold text-xl mb-4 border-b pb-2 dark:border-slate-700 flex items-center justify-between">
+                    <span>المنتدى التفاعلي مع الأستاذة</span>
+                    <span class="text-xs font-normal text-green-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> مباشر</span>
+                </h3>
                 <div id="studentForumList" class="flex-1 overflow-y-auto space-y-3 mb-4 pr-2 scrollbar-thin"></div>
                 <div class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <input type="text" id="sForumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-2 bg-transparent text-sm outline-none">
+                    <input type="text" id="sForumMsgInput" placeholder="اكتب سؤالك هنا..." class="flex-1 p-2 bg-transparent text-sm outline-none" onkeypress="if(event.key==='Enter') postForumMessage('student')">
                     <button onclick="postForumMessage('student')" class="px-5 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-darkblue transition"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- التذييل (Footer) المُطور -->
+    <!-- التذييل (Footer) -->
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-12 pb-8 mt-auto relative overflow-hidden">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-brand-blue dark:via-brand-yellow to-transparent opacity-30"></div>
-        
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-right">
             
-            <!-- معلومات المنصة وحقوق النشر -->
             <div class="flex flex-col space-y-2">
                 <span class="text-2xl font-black gradient-text">منصة نواة</span>
                 <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">المرجع الأول لطلاب البكالوريا في العلوم الطبيعية.</p>
@@ -257,26 +268,21 @@
                 </div>
             </div>
             
-            <!-- حسابات التواصل الاجتماعي -->
             <div class="flex flex-col items-center justify-center space-y-3">
                 <span class="text-sm font-bold text-slate-700 dark:text-slate-300">تابع الأستاذة على:</span>
                 <div class="flex items-center gap-4 text-xl">
-                    <!-- حساب انستغرام 1 -->
                     <a href="#" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-pink-600 hover:bg-pink-100 dark:hover:bg-slate-700 transition" title="Instagram 1">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
-                    <!-- حساب انستغرام 2 -->
                     <a href="#" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-pink-600 hover:bg-pink-100 dark:hover:bg-slate-700 transition" title="Instagram 2">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
-                    <!-- حساب يوتيوب -->
                     <a href="#" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-red-600 hover:bg-red-100 dark:hover:bg-slate-700 transition" title="YouTube">
                         <i class="fa-brands fa-youtube"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- معلومات المطور -->
             <div class="flex flex-col items-center md:items-end space-y-2">
                 <div class="text-xs text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 px-5 py-2.5 rounded-2xl shadow-sm">
                     تطوير وبرمجة الواجهة والنظام: 
@@ -483,7 +489,7 @@
             const courses = await fetchData('getCourses');
             const container = document.getElementById('teacherCoursesList');
             if(!Array.isArray(courses) || courses.length === 0) {
-                container.innerHTML = `<p class="text-sm text-slate-400 text-center py-4">لا توجد دورات مضافة.</p>`;
+                container.innerHTML = `<p class="text-sm text-slate-400 text-center py-4">لا توجد دورات مضافة حالياً.</p>`;
                 return;
             }
             container.innerHTML = courses.map(c => `
@@ -522,7 +528,6 @@
 
                 return `
                     <div class="glass-card p-6 rounded-3xl shadow-md space-y-4 border ${isActivated ? 'border-green-400 dark:border-green-500 bg-green-50/30 dark:bg-green-900/10' : 'border-slate-200 dark:border-slate-700'} relative overflow-hidden">
-                        ${isActivated ? '<div class="absolute top-0 right-0 w-16 h-16 bg-green-100 dark:bg-green-900/50 rounded-bl-full z-0"></div>' : ''}
                         
                         <div class="flex justify-between items-start relative z-10">
                             <h4 class="font-black text-lg text-brand-blue dark:text-brand-yellow">${c.Title}</h4>
@@ -537,12 +542,12 @@
                             <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700 relative z-10">
                                 <div class="text-sm font-bold text-brand-blue dark:text-brand-yellow"><i class="fa-solid fa-play-circle ml-1"></i> دروس الفيديو:</div>
                                 <div class="grid gap-2">
-                                    ${videos.map(v => `<a href="${v.url}" target="_blank" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-brand-blue transition flex items-center"><i class="fa-solid fa-play text-brand-blue mr-2 ml-2"></i> ${v.title}</a>`).join('')}
+                                    ${videos.length ? videos.map(v => `<a href="${v.url}" target="_blank" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-brand-blue transition flex items-center"><i class="fa-solid fa-play text-brand-blue mr-2 ml-2"></i> ${v.title}</a>`).join('') : '<span class="text-xs text-slate-400">لا توجد فيديوهات مضافة بعد.</span>'}
                                 </div>
                                 
                                 <div class="text-sm font-bold text-green-600 dark:text-green-400 pt-2"><i class="fa-solid fa-file-pdf ml-1"></i> ملفات PDF والتمارين:</div>
                                 <div class="grid gap-2">
-                                    ${files.map(f => `<a href="${f.url}" target="_blank" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-green-500 transition flex items-center"><i class="fa-solid fa-file-lines text-green-600 mr-2 ml-2"></i> ${f.title}</a>`).join('')}
+                                    ${files.length ? files.map(f => `<a href="${f.url}" target="_blank" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl font-bold hover:border-green-500 transition flex items-center"><i class="fa-solid fa-file-lines text-green-600 mr-2 ml-2"></i> ${f.title}</a>`).join('') : '<span class="text-xs text-slate-400">لا توجد ملفات مضافة بعد.</span>'}
                                 </div>
                             </div>
                         ` : `
@@ -554,8 +559,6 @@
                     </div>
                 `;
             }).join('');
-
-            loadForumMessages('studentForumList');
         }
 
         async function submitReceipt(courseId) {
@@ -579,55 +582,73 @@
         async function loadForumMessages(elementId) {
             const msgs = await fetchData('getForum');
             const container = document.getElementById(elementId);
+            if (!container) return;
+            
             if(!Array.isArray(msgs) || msgs.length === 0) {
-                container.innerHTML = `<p class="text-sm text-slate-400 text-center mt-4">لا توجد رسائل حالياً.</p>`;
+                container.innerHTML = `<p class="text-sm text-slate-400 text-center mt-4">لا توجد رسائل في المنتدى حالياً.</p>`;
                 return;
             }
+            
             container.innerHTML = msgs.map(m => {
                 const isTeacher = m.SenderRole === 'الأستاذة' || m.SenderRole === 'teacher';
                 return `
-                <div class="p-4 rounded-2xl text-sm relative border ${isTeacher ? 'bg-blue-50/50 dark:bg-slate-800 border-blue-200 dark:border-slate-700 ml-4' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 mr-4'} shadow-sm">
+                <div class="p-4 rounded-2xl text-sm relative border ${isTeacher ? 'bg-blue-50/70 dark:bg-slate-800/80 border-blue-200 dark:border-slate-700 mr-2' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 ml-2'} shadow-sm">
                     <div class="flex items-center gap-2 mb-1">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${isTeacher ? 'bg-brand-blue' : 'bg-slate-400'}">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white ${isTeacher ? 'bg-brand-blue' : 'bg-slate-500'} shadow-sm">
                             ${isTeacher ? '<i class="fa-solid fa-chalkboard-user"></i>' : '<i class="fa-solid fa-user"></i>'}
                         </div>
-                        <div class="font-bold ${isTeacher ? 'text-brand-blue dark:text-brand-yellow' : 'text-slate-700 dark:text-slate-300'}">
-                            ${m.SenderName || 'مستخدم'}
+                        <div>
+                            <span class="font-bold ${isTeacher ? 'text-brand-blue dark:text-brand-yellow' : 'text-slate-800 dark:text-slate-200'}">
+                                ${m.SenderName || 'مستخدم'}
+                            </span>
+                            <span class="text-[10px] text-slate-400 mr-2">${m.Timestamp || ''}</span>
                         </div>
                     </div>
-                    <p class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed">${m.MessageText || ''}</p>
+                    <p class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed font-medium pr-1">${m.MessageText || ''}</p>
                     ${currentUser?.role === 'teacher' ? `<button onclick="deleteForumMessage('${m.MessageID}')" class="text-red-400 hover:text-red-600 font-bold absolute top-3 left-3 text-[11px] transition"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
             `}).join('');
-            
-            // Scroll to bottom optionally
-            // container.scrollTop = container.scrollHeight;
         }
 
         async function postForumMessage(type) {
             const input = document.getElementById(type === 'teacher' ? 'tForumMsgInput' : 'sForumMsgInput');
             if (!input.value.trim()) return;
+
+            const text = input.value;
+            input.value = '';
+
             await postData({
                 action: 'postForum',
                 email: currentUser.student?.Email || "teacher@nawat.com",
                 name: currentUser.name || (currentUser.student.FirstName + ' ' + currentUser.student.LastName),
                 role: currentUser.role === 'teacher' ? 'الأستاذة' : 'طالب',
-                messageText: input.value
+                messageText: text
             });
-            input.value = '';
+
             loadForumMessages(type === 'teacher' ? 'teacherForumList' : 'studentForumList');
         }
 
         async function deleteForumMessage(msgId) {
+            if(!confirm("هل تريد حذف هذه الرسالة؟")) return;
             await postData({ action: 'deleteForum', messageId: msgId });
             loadForumMessages('teacherForumList');
         }
 
+        // التحديث التلقائي الفوري للمنتدى والدورات كل 3 ثوانٍ
         function startAutoSync(role) {
             if(syncInterval) clearInterval(syncInterval);
-            syncInterval = setInterval(() => {
-                loadForumMessages(role === 'teacher' ? 'teacherForumList' : 'studentForumList');
-            }, 4000); // تحديث المنتدى كل 4 ثوانٍ
+            
+            const sync = () => {
+                if (role === 'teacher') {
+                    loadForumMessages('teacherForumList');
+                } else {
+                    loadForumMessages('studentForumList');
+                    loadStudentDashboard();
+                }
+            };
+            
+            sync();
+            syncInterval = setInterval(sync, 3000);
         }
     </script>
 </body>
